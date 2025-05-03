@@ -22,9 +22,10 @@ node createnode(int vertex){
 
 void graph(node adjlist[], int vertices, char type){
     int src, dest;
+    char choice;
     while(1){
         printf("Enter the source and destionation of vertices you want to link (source,destination): ");
-        scanf("%d,%d",&src,&dest);
+        scanf(" %d,%d",&src,&dest);
 
         if(src==dest){
             printf("Self linkage is not allowed for this graph.\n"); // self linkage edge case
@@ -40,7 +41,7 @@ void graph(node adjlist[], int vertices, char type){
         while(temp->next!=NULL){
             if(temp->vertex==dest){
                 printf("Linkage already ready present...\n"); // linkage already present edge case
-                continue;
+                break;
             }
             temp = temp->next;
         }
@@ -53,31 +54,49 @@ void graph(node adjlist[], int vertices, char type){
             while(temp2->next!=NULL){
                 if(temp2->vertex==dest){
                     printf("Linkage already ready present...\n"); // linkage already present edge case
-                    continue;
+                    goto skip;
                 }
                 temp2 = temp2->next;
             }
             temp2->next = createnode(src);
         }
+        skip:
+        printf("Do you want to continue [y/n]: ");
+        scanf(" %c", &choice);
+        if(choice=='n' || choice=='N') break;
     }
+    
 }
 
 void display(node adjlist[], int vertices){
     for(int i = 0; i<vertices; i++){
-        node temp = adjlist[i];
-        do{
-            printf("%d->",temp->vertex);
-        }while(temp->next!=NULL);
+        node temp = adjlist[i]; // skip dummy head
+        while (temp != NULL) {
+            printf("%d -> ", temp->vertex);
+            temp = temp->next;
+        }
         printf("NULL\n");
+
     }
 }
 
 int main(){
     int vertices;
+    char type;
     printf("Enter the number of vertices you want: ");
     scanf("%d",&vertices);
 
-    node adjlist[] = (node)malloc(vertices*sizeof(struct Node));
+    node adjlist[vertices];
+    for (int i = 0; i < vertices; i++) {
+        adjlist[i] = createnode(i);  // dummy head
+    }
+
+    printf("What kind of graph you want, directional or undirectional [d/u] : ");
+    scanf(" %c", &type);
+    graph(adjlist,vertices, type);
+
+    display(adjlist,vertices);
+
     return 0;
 }
 
